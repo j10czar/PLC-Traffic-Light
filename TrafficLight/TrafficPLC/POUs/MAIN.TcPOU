@@ -4,34 +4,131 @@
     <Declaration><![CDATA[PROGRAM MAIN
 VAR
 	//light states
-	northIsRed : BOOL := FALSE;
+	northIsRed : BOOL := TRUE; //Start of the program
 	northIsYellow : BOOL := FALSE;
 	northIsGreen : BOOL := FALSE;
 	
 	eastIsRed : BOOL := FALSE;
 	eastIsYellow : BOOL := FALSE;
-	eastIsGreen : BOOL := FALSE;
+	eastIsGreen : BOOL := FALSE; 
 	
 	//timers
+	northRedTimer: TON;
+	northYellowTimer: TON;
+	northGreenTimer: TON;
 	
-	redTimer: TON;
-	yellowTimer: TON;
-	greenTimer: TON;
+	eastRedTimer: TON;
+	eastYellowTimer: TON;
+	eastGreenTimer: TON;
 	
 	
 	//amount of time each light stays on
-	redTime : TIME := T#20S;
+	redTime : TIME := T#32S;  
 	yellowTime : TIME := T#4S;
 	greenTime : TIME := T#20S;
+	
+	
+	//initial offset state
+	isOffset : BOOL := TRUE; // Also starts the program off
+	//offset timer and time value
+	offsetTimer : TON;
+
+	offsetTime : TIME := T#4S;
+	
 	
 	
 END_VAR
 ]]></Declaration>
     <Implementation>
-      <ST><![CDATA[]]></ST>
+      <ST><![CDATA[northRedTimer(IN := northIsRed, PT := redTime);
+northYellowTimer(IN := northIsYellow, PT := yellowTime);
+northGreenTimer(IN := northIsGreen, PT := greenTime);
+
+eastRedTimer(IN := eastIsRed, PT := redTime);
+eastYellowTimer(IN := eastIsYellow, PT := yellowTime);
+eastGreenTimer(IN := eastIsGreen, PT := greenTime);
+
+
+offsetTimer(IN:=isOffset, PT := offsetTime);
+
+
+//Initial offset state
+IF offsetTimer.Q THEN
+	eastIsGreen := TRUE;
+	isOffset := FALSE;
+END_IF
+
+
+//North Light Timings
+
+IF northRedTimer.Q THEN
+	northIsRed := FALSE;
+	northIsGreen := TRUE;
+END_IF
+
+IF northGreenTimer.Q THEN
+	northIsGreen := FALSE;
+	northIsYellow := TRUE;
+END_IF
+
+IF northYellowTimer.Q THEN
+	northIsYellow := FALSE;
+	northIsRed := TRUE;
+END_IF
+
+
+//East Light Timings
+
+IF eastRedTimer.Q THEN
+	eastIsRed := FALSE;
+	eastIsGreen := TRUE;
+END_IF
+
+IF eastGreenTimer.Q THEN
+	eastIsGreen := FALSE;
+	eastIsYellow := TRUE;
+END_IF
+
+IF eastYellowTimer.Q THEN
+	eastIsYellow := FALSE;
+	eastIsRed := TRUE;
+END_IF]]></ST>
     </Implementation>
     <LineIds Name="MAIN">
       <LineId Id="2" Count="0" />
+      <LineId Id="57" Count="1" />
+      <LineId Id="60" Count="2" />
+      <LineId Id="59" Count="0" />
+      <LineId Id="70" Count="1" />
+      <LineId Id="69" Count="0" />
+      <LineId Id="116" Count="1" />
+      <LineId Id="72" Count="0" />
+      <LineId Id="111" Count="0" />
+      <LineId Id="113" Count="1" />
+      <LineId Id="64" Count="0" />
+      <LineId Id="63" Count="0" />
+      <LineId Id="31" Count="0" />
+      <LineId Id="30" Count="0" />
+      <LineId Id="37" Count="0" />
+      <LineId Id="36" Count="0" />
+      <LineId Id="38" Count="0" />
+      <LineId Id="89" Count="0" />
+      <LineId Id="39" Count="0" />
+      <LineId Id="96" Count="3" />
+      <LineId Id="95" Count="0" />
+      <LineId Id="101" Count="0" />
+      <LineId Id="105" Count="2" />
+      <LineId Id="100" Count="0" />
+      <LineId Id="109" Count="1" />
+      <LineId Id="108" Count="0" />
+      <LineId Id="91" Count="3" />
+      <LineId Id="90" Count="0" />
+      <LineId Id="75" Count="0" />
+      <LineId Id="79" Count="2" />
+      <LineId Id="74" Count="0" />
+      <LineId Id="83" Count="1" />
+      <LineId Id="86" Count="1" />
+      <LineId Id="82" Count="0" />
     </LineIds>
   </POU>
 </TcPlcObject>
